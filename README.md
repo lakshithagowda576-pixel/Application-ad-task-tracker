@@ -1,6 +1,6 @@
 # Smart Task & Habit Tracker
 
-A polished, responsive task and habit tracking prototype built with the MEAN stack. The application includes a dummy login gate, task and habit CRUD flows, completion toggles, and a modern Tailwind-powered dashboard.
+A polished, responsive task and habit tracker prototype built with the MEAN stack. The application supports protected access, task/habit CRUD operations, dark mode-friendly styling, progress indicators, and responsive Tailwind UI.
 
 ## 🧱 Project Structure
 
@@ -10,81 +10,114 @@ smart-task-tracker/
 │   ├── config/
 │   │   └── db.js
 │   ├── controllers/
-│   │   └── itemController.js
-│   ├── middleware/
-│   │   └── authMiddleware.js
+│   │   └── taskController.js
 │   ├── models/
-│   │   └── Item.js
+│   │   └── Task.js
 │   ├── routes/
-│   │   ├── authRoutes.js
-│   │   └── itemRoutes.js
+│   │   └── taskRoutes.js
 │   ├── package.json
-│   └── server.js
+│   ├── package-lock.json
+│   ├── server.js
+│   └── .env
 ├── frontend/
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── app.component.ts
 │   │   │   ├── app.config.ts
 │   │   │   ├── app.routes.ts
-│   │   │   └── components/
-│   │   │       └── dashboard/
+│   │   │   ├── components/
+│   │   │   │   └── dashboard/
+│   │   │   │       ├── dashboard.component.htm
+│   │   │   │       └── dashboard.component.ts
+│   │   │   ├── services/
+│   │   │   │   └── api.service.ts
 │   │   ├── index.html
 │   │   ├── main.ts
 │   │   └── styles.css
 │   ├── angular.json
 │   ├── package.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── tsconfig.app.json
 │   └── tsconfig.json
-├── package.json
+├── .gitignore
 └── README.md
 ```
 
-## ⚙️ Setup Commands
+## ⚙️ Setup Instructions
+
+### Prerequisites
+- Node.js installed
+- MongoDB running locally or a MongoDB Atlas URI
+- Angular CLI installed globally if you want `ng` commands available
+
+### Install dependencies
 
 ```bash
-# From the workspace root
-npm install -g @angular/cli
-
-# Backend
 cd backend
 npm install
-
-# Frontend
 cd ../frontend
 npm install
 ```
 
-## ▶️ Running the Application
+### Configure backend
+
+Create a `.env` file inside `backend/` with the following values if you want MongoDB persistence:
+
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/smart-task-tracker
+PORT=5000
+```
+
+If MongoDB is unavailable, the backend still starts in local fallback mode.
+
+### Run locally
 
 ```bash
-# Backend
 cd backend
 npm run dev
 
-# Frontend (separate terminal)
+# in another terminal
 cd frontend
 npm start
 ```
 
-Use any username and the password `password` to access the dashboard.
+Then open `http://localhost:4200`.
 
-## 🧠 AI Reflections
+### Login
+- Username: any value
+- Password: `password`
 
-- AI tools were used to scaffold the project structure, propose the dashboard layout, and generate the initial Express and Angular implementation.
-- The human developer finalized the architecture, validated the user flow, and ensured the prototype remained fully functional and self-contained.
-- One challenge was balancing the requested dummy authentication with a production-ready-looking UX while keeping the project easy to run locally.
+## 🧠 AI tools used
+- AI helped generate the initial project structure and infer the BE/FE architecture.
+- AI assisted with writing Express route handlers and Angular standalone component logic.
+- AI helped align the README and project commands with the actual codebase.
 
-## 🚀 Future Improvements
+## 🤖 Where AI helped
+- scaffolding the backend controllers and routes
+- generating the frontend standalone component and Tailwind-based layout
+- defining the API service contract and TypeScript interfaces
+- writing the README documentation and setup commands
 
-- Replace the mock API with real MongoDB-backed services and JWT authentication.
-- Add historical charts, streak tracking, and reminders.
-- Introduce drag-and-drop organization and filtering by status or type.
+## 👷 What was implemented manually
+- tying the app to the real backend route structure
+- ensuring the frontend build config and tsconfig were valid
+- refining UI behavior for filtering, progress, and responsive layout
+- verifying the backend health endpoint and local run process
 
-## 📝 Sample Git History
+## ⚠️ Challenges faced
+- keeping the app consistent while migrating from the earlier mock service to a real API service
+- handling Angular CLI path issues in this Windows environment
+- ensuring the backend started even when MongoDB was unavailable
 
-```text
-feat: scaffold smart task tracker backend
-feat: add auth and task CRUD endpoints
-feat: build responsive dashboard with Tailwind UI
-refactor: connect dashboard to mock API layer
-docs: add setup and architecture guidance
-```
+## 🚀 Future improvements
+- add real MongoDB Atlas persistence and JWT authentication
+- add user registration and per-user data isolation
+- implement a history dashboard with charts and streak tracking
+- add server-side validation and stronger error handling
+- support task categories, due dates, and calendar reminders
+
+## 📝 Notes
+- The app is designed to work with a simple dummy login.
+- The backend is currently prepared for MongoDB but can fallback if the connection is not available.

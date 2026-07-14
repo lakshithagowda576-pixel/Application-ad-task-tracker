@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from '../../services/api.service';
+import { ApiService, TaskItem } from '../../services/api.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,45 +10,45 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './dashboard.component.htm'
 })
 export class DashboardComponent implements OnInit {
-  items: any[] = [];
-  newItem = { title: '', company: '', status: 'Pending', notes: '' };
+  items: TaskItem[] = [];
+  newItem = { title: '', type: 'Task' as 'Task' | 'Habit', completed: false, author: 'demo-user' };
   editingId: string | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private readonly apiService: ApiService) {}
 
   ngOnInit(): void {
     this.loadItems();
   }
 
   loadItems(): void {
-    this.apiService.getItems().subscribe((data: any[]) => this.items = data);
+    this.apiService.getTasks('demo-user').subscribe((data: TaskItem[]) => this.items = data);
   }
 
   saveItem() {
     if (this.editingId) {
-      this.apiService.updateItem(this.editingId, this.newItem).subscribe(() => {
+      this.apiService.updateTask(this.editingId, this.newItem).subscribe(() => {
         this.resetForm();
         this.loadItems();
       });
     } else {
-      this.apiService.createItem(this.newItem).subscribe(() => {
+      this.apiService.createTask(this.newItem).subscribe(() => {
         this.resetForm();
         this.loadItems();
       });
     }
   }
 
-  editItem(item: any) {
-    this.editingId = item._id;
-    this.newItem = { ...item };
+  editItem(item: TaskItem) {
+    this.editingId = item.id;
+    this.newItem = { title: item.title, type: item.type, completed: item.completed, author: item.author };
   }
 
   deleteItem(id: string) {
-    this.apiService.deleteItem(id).subscribe(() => this.loadItems());
+    this.apiService.deleteTask(id).subscribe(() => this.loadItems());
   }
 
   resetForm() {
     this.editingId = null;
-    this.newItem = { title: '', company: '', status: 'Pending', notes: '' };
+    this.newItem = { title: '', type: 'Task', completed: false, author: 'demo-user' };
   }
 }
