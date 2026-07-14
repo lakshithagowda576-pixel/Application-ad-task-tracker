@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const net = require('net');
 const taskRoutes = require('./routes/taskRoutes');
+const userTracking = require('./utils/userTracking');
 
 dotenv.config();
 
@@ -13,6 +14,11 @@ app.use(express.json());
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/smart-task-tracker';
 const PORT = Number(process.env.PORT || 5000);
+
+// Cleanup inactive sessions every 5 minutes
+setInterval(() => {
+  userTracking.cleanupInactiveSessions();
+}, 5 * 60 * 1000);
 
 function getAvailablePort(startPort) {
   return new Promise((resolve, reject) => {
@@ -42,6 +48,10 @@ async function startServer() {
   });
 }
 
+app.get('/', (_req, res) => {
+  res.json({ message: 'Smart Task Tracker API', version: '1.0.0', endpoints: { health: '/api/health', tasks: '/api/tasks', login: '/api/auth/login' } });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'Smart Task Tracker API is running' });
 });
@@ -51,18 +61,39 @@ app.post('/api/auth/login', (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ message: 'Username and password are required.' });
+      return res.status(200).json({ success: false, message: 'Username and password are required.' });
     }
 
     if (password !== 'password') {
-      return res.status(401).json({ message: 'Invalid password. Use password to continue.' });
+      return res.status(200).json({ success: false, message: 'Invalid password. Use password to continue.' });
     }
+
+    // Track the user login
+    userTracking.trackUserLogin(username);
 
     return res.status(200).json({
       success: true,
       message: 'Login successful',
       user: { username, role: 'user' }
     });
+  } catch (error) {
+    return res.status(200).json({ success: false, message: error.message });
+  }
+});
+
+// Admin Panel Endpoints
+app.get('/api/admin/stats', (req, res) => {
+  try {
+    const activeSessions = userTracking.getActiveSessions();
+    const stats = {
+      totalActiveUsers: userTracking.getActiveSessionCount(),
+      activeSessions: activeSessions.map((session) => ({
+        username: session.username,
+        loginTime: session.loginTime,
+        lastActivity: session.lastActivity
+      }))
+    };
+    return res.status(200).json(stats);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

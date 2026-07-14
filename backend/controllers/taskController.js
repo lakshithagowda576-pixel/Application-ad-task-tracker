@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Task = require('../models/Task');
-
-let memoryTasks = [];
+const persistence = require('../utils/persistence');
 
 const toResponseTask = (task) => ({
   ...task,
@@ -19,7 +18,8 @@ const getTasks = async (req, res) => {
       return res.status(200).json(tasks.map(toResponseTask));
     }
 
-    const tasks = memoryTasks.filter((task) => task.author === author);
+    // Use persistent file storage when MongoDB is not available
+    const tasks = persistence.getTasks(author);
     return res.status(200).json(tasks.map(toResponseTask));
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -39,15 +39,8 @@ const createTask = async (req, res) => {
       return res.status(201).json(toResponseTask(task));
     }
 
-    const task = {
-      id: `${Date.now()}`,
-      title,
-      type,
-      completed,
-      author,
-      createdAt: new Date().toISOString()
-    };
-    memoryTasks.unshift(task);
+    // Use persistent file storage when MongoDB is not available
+    const task = persistence.createTask({ title, type, completed, author });
     return res.status(201).json(toResponseTask(task));
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -69,13 +62,13 @@ const updateTask = async (req, res) => {
       return res.status(200).json(toResponseTask(updatedTask));
     }
 
-    const index = memoryTasks.findIndex((task) => task.id === req.params.id || task._id === req.params.id);
-    if (index === -1) {
+    // Use persistent file storage when MongoDB is not available
+    const updatedTask = persistence.updateTask(req.params.id, req.body);
+    if (!updatedTask) {
       return res.status(404).json({ message: 'Task not found.' });
     }
 
-    memoryTasks[index] = { ...memoryTasks[index], ...req.body };
-    return res.status(200).json(toResponseTask(memoryTasks[index]));
+    return res.status(200).json(toResponseTask(updatedTask));
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -93,12 +86,14 @@ const deleteTask = async (req, res) => {
       return res.status(200).json({ message: 'Task deleted successfully.', id: req.params.id });
     }
 
-    const index = memoryTasks.findIndex((task) => task.id === req.params.id || task._id === req.params.id);
-    if (index === -1) {
+    // Use persistent file storage when MongoDB is not available
+    const deleted = persistence.deleteTask(req.params.id);
+    if (!deleted) {
       return res.status(404).json({ message: 'Task not found.' });
     }
 
-    memoryTasks.splice(index, 1);
+    return res.status(200).json({ message: 'Task deleted successfully.', id: req.params.id });
+
     return res.status(200).json({ message: 'Task deleted successfully.', id: req.params.id });
   } catch (error) {
     return res.status(500).json({ message: error.message });

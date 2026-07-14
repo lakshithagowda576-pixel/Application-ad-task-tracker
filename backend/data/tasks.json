@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1784014665655",
+    "title": "Preparation for exam",
+    "type": "Task",
+    "completed": false,
+    "author": "lakshitha",
+    "createdAt": "2026-07-14T07:37:45.655Z"
+  },
+  {
+    "id": "1784014641131",
+    "title": "Writting",
+    "type": "Task",
+    "completed": true,
+    "author": "lakshitha",
+    "createdAt": "2026-07-14T07:37:21.131Z"
+  },
+  {
+    "id": "1784014626763",
+    "title": "Test",
+    "type": "Task",
+    "completed": true,
+    "author": "lakshitha",
+    "createdAt": "2026-07-14T07:37:06.763Z"
+  },
+  {
+    "id": "1784014605350",
+    "title": "Project1",
+    "type": "Task",
+    "completed": false,
+    "author": "lakshitha",
+    "createdAt": "2026-07-14T07:36:45.350Z"
+  },
+  {
+    "id": "1784014585965",
+    "title": "Reading",
+    "type": "Habit",
+    "completed": true,
+    "author": "lakshitha",
+    "createdAt": "2026-07-14T07:36:26.412Z"
+  }
+]
