@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./node_modules/@angular/cli/bin/ng.js serve",
+    "start": "node scripts/start-dev.js",
     "build": "node ./node_modules/@angular/cli/bin/ng.js build"
   },
   "dependencies": {
