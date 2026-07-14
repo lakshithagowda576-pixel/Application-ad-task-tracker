@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { ApiService, TaskItem } from './services/api.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   template: `
     <div class="min-h-screen bg-slate-950 px-4 py-6 text-slate-100 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-6xl">
@@ -44,10 +43,7 @@ import { ApiService, TaskItem } from './services/api.service';
                 <h2 class="mt-2 text-3xl font-semibold text-white">Welcome back, {{ currentUser }}</h2>
                 <p class="mt-2 text-sm text-slate-400">Track tasks, build habits, and keep your momentum visible.</p>
               </div>
-              <div class="flex gap-2">
-                <a routerLink="/admin" class="rounded-2xl border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-red-500 hover:text-red-400">Admin Panel</a>
-                <button (click)="logout()" class="rounded-2xl border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-rose-500 hover:text-rose-400">Logout</button>
-              </div>
+              <button (click)="logout()" class="rounded-2xl border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-rose-500 hover:text-rose-400">Logout</button>
             </div>
             <div class="mt-6 grid gap-4 md:grid-cols-4">
               <div class="rounded-2xl bg-slate-800/90 p-4"><p class="text-sm text-slate-400">Total Items</p><p class="mt-2 text-2xl font-semibold text-white">{{ metrics.total }}</p></div>

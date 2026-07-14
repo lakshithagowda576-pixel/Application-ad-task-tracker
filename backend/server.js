@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const net = require('net');
 const taskRoutes = require('./routes/taskRoutes');
-const userTracking = require('./utils/userTracking');
 
 dotenv.config();
 
@@ -14,11 +13,6 @@ app.use(express.json());
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/smart-task-tracker';
 const PORT = Number(process.env.PORT || 5000);
-
-// Cleanup inactive sessions every 5 minutes
-setInterval(() => {
-  userTracking.cleanupInactiveSessions();
-}, 5 * 60 * 1000);
 
 function getAvailablePort(startPort) {
   return new Promise((resolve, reject) => {
@@ -68,9 +62,6 @@ app.post('/api/auth/login', (req, res) => {
       return res.status(200).json({ success: false, message: 'Invalid password. Use password to continue.' });
     }
 
-    // Track the user login
-    userTracking.trackUserLogin(username);
-
     return res.status(200).json({
       success: true,
       message: 'Login successful',
@@ -78,24 +69,6 @@ app.post('/api/auth/login', (req, res) => {
     });
   } catch (error) {
     return res.status(200).json({ success: false, message: error.message });
-  }
-});
-
-// Admin Panel Endpoints
-app.get('/api/admin/stats', (req, res) => {
-  try {
-    const activeSessions = userTracking.getActiveSessions();
-    const stats = {
-      totalActiveUsers: userTracking.getActiveSessionCount(),
-      activeSessions: activeSessions.map((session) => ({
-        username: session.username,
-        loginTime: session.loginTime,
-        lastActivity: session.lastActivity
-      }))
-    };
-    return res.status(200).json(stats);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
   }
 });
 
