@@ -12,6 +12,12 @@ export interface TaskItem {
   createdAt: string;
 }
 
+export interface LoginResponse {
+  success: boolean;
+  message?: string;
+  user?: { username: string };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,8 +26,8 @@ export class ApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  login(username: string, password: string): Observable<{ success: boolean; user: { username: string } }> {
-    return this.http.post<{ success: boolean; user: { username: string } }>(`${this.apiUrl}/auth/login`, { username, password });
+  login(username: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { username, password });
   }
 
   getTasks(author: string): Observable<TaskItem[]> {

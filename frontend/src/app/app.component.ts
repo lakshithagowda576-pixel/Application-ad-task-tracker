@@ -144,7 +144,7 @@ export class AppComponent implements OnInit {
     this.loginError = '';
     this.apiService.login(this.username.trim(), this.password).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.success && response.user) {
           this.currentUser = response.user.username;
           this.isLoggedIn = true;
           localStorage.setItem('smart-task-tracker-user', this.currentUser);
