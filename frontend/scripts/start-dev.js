@@ -21,13 +21,13 @@ function getFreePort(startPort = 4200) {
 }
 
 async function main() {
-  const port = await getFreePort(4200);
+  const port = await getFreePort(process.env.FRONTEND_PORT ? Number(process.env.FRONTEND_PORT) : 4200);
   const frontendRoot = path.resolve(__dirname, '..');
   const ngBin = path.join(frontendRoot, 'node_modules', '@angular', 'cli', 'bin', 'ng.js');
-  const child = spawn(process.execPath, [ngBin, 'serve', '--host', '0.0.0.0', '--port', String(port)], {
+  const child = spawn(process.execPath, [ngBin, 'serve', '--host', '0.0.0.0', '--port', String(port), '--disable-host-check'], {
     cwd: frontendRoot,
     stdio: 'inherit',
-    env: { ...process.env, PORT: String(port) }
+    env: { ...process.env, PORT: String(port), FRONTEND_PORT: String(port) }
   });
 
   child.on('exit', (code) => {

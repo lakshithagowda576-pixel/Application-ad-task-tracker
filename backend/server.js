@@ -36,6 +36,9 @@ async function startServer() {
   const port = await getAvailablePort(PORT);
   app.listen(port, '0.0.0.0', () => {
     console.log(`Smart Task Tracker API running on port ${port}`);
+    if (process.env.NODE_ENV !== 'test') {
+      console.log(`Backend ready on http://127.0.0.1:${port}`);
+    }
   });
 }
 
